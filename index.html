@@ -1,94 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Evergreen Creativity Mindsets</title>
-  <meta name="description" content="A practical toolkit of five creativity mindsets — Imaginative, Inquisitive, Persistent, Collaborative, and Disciplined — for Evergreen School teachers." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Evergreen Creativity Toolkit Builder</title>
+<meta name="description" content="Document a creativity-mindset lesson and export a polished, publication-ready five-page Evergreen Creativity Toolkit entry." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/print.css">
 </head>
 <body>
 
-  <a class="skip-link" href="#main">Skip to main content</a>
+<a class="skip-link" href="#builder-form">Skip to form</a>
 
-  <!-- ============ HEADER ============ -->
-  <header class="site-header" id="site-header">
-    <div class="site-header__inner">
-      <a class="site-header__brand" href="#top">
-        <span class="site-header__mark" aria-hidden="true"></span>
-        <span class="site-header__title"><span class="site-header__brand-accent">Evergreen</span> Creativity Mindsets</span>
-      </a>
-      <nav class="site-header__nav" aria-label="Primary">
-        <a href="#top">Home</a>
-        <a href="#mindsets">Explore the Mindsets</a>
-        <a href="#about">About the Project</a>
-      </nav>
+<header class="app-header">
+  <div class="app-header__inner">
+    <div class="app-header__brand">
+      <span class="app-header__mark" aria-hidden="true">EG</span>
+      <div>
+        <p class="app-header__eyebrow">Evergreen School · 2026&ndash;27</p>
+        <h1 class="app-header__title">Creativity Toolkit Builder</h1>
+      </div>
     </div>
-  </header>
+    <p class="app-header__save" id="save-indicator" role="status" aria-live="polite">Your work is saved locally in this browser and is not uploaded by this tool.</p>
+  </div>
+</header>
 
-  <main id="main">
+<main class="workspace">
 
-    <!-- ============ HERO ============ -->
-    <section class="hero" id="top">
-      <div class="hero__inner">
-        <p class="hero__eyebrow">Evergreen Creativity Program</p>
-        <h1 class="hero__headline">Five Mindsets for <span class="hero__headline-accent">Creative Learning</span></h1>
-        <p class="hero__sub">Explore practical ways to help students imagine, inquire, persist, collaborate, and develop the discipline to turn ideas into meaningful work.</p>
-        <p class="hero__cta-text">Select a mindset to explore what it looks like in practice and discover strategies you can incorporate into your lessons.</p>
+  <!-- ============ LEFT COLUMN: FORM ============ -->
+  <section class="form-column" aria-labelledby="form-heading">
+    <div class="form-column__inner" id="builder-form">
+      <h2 id="form-heading" class="form-heading">Build Your Toolkit Entry</h2>
+      <p class="form-intro">
+        Share a lesson or project where you deliberately integrated one of Evergreen&rsquo;s
+        five creativity mindsets. Your entry will be formatted as a five-page resource that
+        can contribute to the collective Evergreen Creativity Toolkit.
+      </p>
+
+      <!-- Progress -->
+      <ol class="progress-tracker" id="progress-tracker" aria-label="Entry progress">
+        <li data-progress="context"><span class="progress-dot" aria-hidden="true"></span>Context</li>
+        <li data-progress="summary"><span class="progress-dot" aria-hidden="true"></span>Summary</li>
+        <li data-progress="mindset"><span class="progress-dot" aria-hidden="true"></span>Mindset</li>
+        <li data-progress="logistics"><span class="progress-dot" aria-hidden="true"></span>Logistics</li>
+        <li data-progress="wisdom"><span class="progress-dot" aria-hidden="true"></span>Wisdom</li>
+      </ol>
+
+      <!-- Mindset Selector -->
+      <div class="mindset-picker" role="group" aria-labelledby="mindset-picker-heading">
+        <h3 id="mindset-picker-heading" class="mindset-picker__heading">Which creativity mindset did you integrate?</h3>
+        <div class="mindset-picker__grid" id="mindset-picker-grid"></div>
+        <p class="mindset-picker__descriptor" id="mindset-picker-descriptor" aria-live="polite"></p>
       </div>
-    </section>
 
-    <!-- ============ MINDSET GRID ============ -->
-    <section class="mindsets" id="mindsets" aria-label="The five creativity mindsets">
-      <div class="mindsets__inner">
-        <div class="mindset-grid" id="mindset-grid">
-          <!-- Cards injected by js/app.js from data/mindsets.js -->
+      <!-- Accordion sections -->
+      <div class="accordion" id="accordion">
+
+        <details class="accordion__item" open data-section="context">
+          <summary class="accordion__summary">
+            <span class="accordion__number">1</span>
+            <span class="accordion__label">Context</span>
+          </summary>
+          <div class="accordion__panel">
+            <div class="field">
+              <label for="field-title">Lesson / Project Title <span class="required-mark">*</span></label>
+              <input type="text" id="field-title" name="title" maxlength="120" autocomplete="off">
+            </div>
+
+            <fieldset class="field">
+              <legend>Subject(s) <span class="required-mark">*</span></legend>
+              <div class="checkbox-grid" id="subject-checkboxes"></div>
+              <div class="other-field" id="subject-other-wrap" hidden>
+                <label for="subject-other-input">Please specify subject</label>
+                <input type="text" id="subject-other-input" maxlength="80">
+              </div>
+            </fieldset>
+
+            <fieldset class="field">
+              <legend>Grade Level(s) <span class="required-mark">*</span></legend>
+              <div class="checkbox-grid" id="grade-checkboxes"></div>
+            </fieldset>
+
+            <div class="field">
+              <label for="field-teacher">Teacher Name <span class="optional-mark">(optional)</span></label>
+              <input type="text" id="field-teacher" name="teacherName" maxlength="80" autocomplete="name">
+            </div>
+          </div>
+        </details>
+
+        <details class="accordion__item" data-section="summary">
+          <summary class="accordion__summary">
+            <span class="accordion__number">2</span>
+            <span class="accordion__label">Summary</span>
+          </summary>
+          <div class="accordion__panel">
+            <div class="field">
+              <label for="field-objectives">Key Learning Objective(s) <span class="required-mark">*</span></label>
+              <p class="field-hint">What are the key learning objectives for this lesson or project?</p>
+              <textarea id="field-objectives" rows="4"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="field-overview">Lesson / Project Overview <span class="required-mark">*</span></label>
+              <p class="field-hint">In approximately 50 words, briefly describe the lesson or project. What are students learning and what are they doing?</p>
+              <textarea id="field-overview" rows="6"></textarea>
+              <p class="word-counter" id="overview-counter" data-state="ok">0 / 50 words</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="accordion__item" data-section="mindset">
+          <summary class="accordion__summary">
+            <span class="accordion__number">3</span>
+            <span class="accordion__label">Integrating the Mindset</span>
+          </summary>
+          <div class="accordion__panel">
+            <p class="mindset-guidance" id="mindset-guidance-text">Select a creativity mindset above to see tailored guidance here.</p>
+            <div class="field">
+              <label for="field-integration" id="integration-label">Describe how you integrated the mindset <span class="required-mark">*</span></label>
+              <p class="field-hint">In approximately 50 words, describe how you deliberately integrated this creativity mindset into the lesson or project. What did students experience or do differently?</p>
+              <textarea id="field-integration" rows="6"></textarea>
+              <p class="word-counter" id="integration-counter" data-state="ok">0 / 50 words</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="accordion__item" data-section="logistics">
+          <summary class="accordion__summary">
+            <span class="accordion__number">4</span>
+            <span class="accordion__label">Logistics</span>
+          </summary>
+          <div class="accordion__panel">
+            <div class="field">
+              <label for="field-time">Time Required</label>
+              <select id="field-time"></select>
+              <div class="other-field" id="time-other-wrap" hidden>
+                <label for="time-other-input">Please specify</label>
+                <input type="text" id="time-other-input" maxlength="60">
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="field-resources">Required Resources <span class="optional-mark">(optional)</span></label>
+              <p class="field-hint">What materials, technology, texts, spaces, or other resources are needed?</p>
+              <textarea id="field-resources" rows="4"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="field-link">Link to Lesson or Supporting Materials <span class="optional-mark">(optional)</span></label>
+              <p class="field-hint">Add a link to your lesson plan, Google Doc, Slides, resource folder, or other supporting material.</p>
+              <input type="url" id="field-link" placeholder="https://" inputmode="url">
+              <p class="field-warning" id="link-warning" hidden>That doesn&rsquo;t look like a complete web address. Double-check it before exporting.</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="accordion__item" data-section="wisdom">
+          <summary class="accordion__summary">
+            <span class="accordion__number">5</span>
+            <span class="accordion__label">Words of Wisdom</span>
+          </summary>
+          <div class="accordion__panel">
+            <p class="field-hint">Based on your experience, what should another Evergreen teacher know before trying this lesson or project? Keep each response concise.</p>
+            <div class="field">
+              <label for="field-wisdom-1">1. Consider&hellip;</label>
+              <textarea id="field-wisdom-1" rows="2" placeholder="e.g., Build in extra time for the first attempt — students needed longer than expected to get comfortable."></textarea>
+            </div>
+            <div class="field">
+              <label for="field-wisdom-2">2. Consider&hellip;</label>
+              <textarea id="field-wisdom-2" rows="2" placeholder="e.g., Model the process yourself first so students see what productive struggle looks like."></textarea>
+            </div>
+            <div class="field">
+              <label for="field-wisdom-3">3. Consider&hellip;</label>
+              <textarea id="field-wisdom-3" rows="2" placeholder="e.g., Small groups of three worked better than pairs for this particular task."></textarea>
+            </div>
+          </div>
+        </details>
+
+      </div>
+
+      <!-- Export / actions -->
+      <div class="actions-card">
+        <div class="validation-summary" id="validation-summary" hidden></div>
+        <div class="actions-card__buttons">
+          <button type="button" class="btn btn--primary" id="btn-download-pdf">Download PDF</button>
+          <button type="button" class="btn btn--secondary" id="btn-download-png">Download Current Page as PNG</button>
+          <button type="button" class="btn btn--secondary" id="btn-download-png-all">Download All Pages as Images</button>
+        </div>
+        <p class="export-status" id="export-status" role="status" aria-live="polite"></p>
+
+        <details class="advanced-options">
+          <summary>Advanced options</summary>
+          <div class="advanced-options__row">
+            <button type="button" class="btn btn--text" id="btn-export-json">Export Entry Data (.json)</button>
+            <button type="button" class="btn btn--text" id="btn-import-json">Import Entry Data (.json)</button>
+            <input type="file" id="import-json-input" accept="application/json" hidden>
+            <button type="button" class="btn btn--text btn--danger" id="btn-new-entry">Start New Entry</button>
+          </div>
+        </details>
+
+        <p class="privacy-note">Your work is saved locally in this browser and is not uploaded by this tool.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ RIGHT COLUMN: PREVIEW ============ -->
+  <section class="preview-column" aria-labelledby="preview-heading">
+    <div class="preview-column__inner">
+      <h2 id="preview-heading" class="preview-heading">Live Preview</h2>
+
+      <nav class="page-nav" aria-label="Preview page selection" id="page-nav">
+        <button type="button" class="page-nav__btn" data-page="1" aria-current="true">Page 1</button>
+        <button type="button" class="page-nav__btn" data-page="2">Page 2</button>
+        <button type="button" class="page-nav__btn" data-page="3">Page 3</button>
+        <button type="button" class="page-nav__btn" data-page="4">Page 4</button>
+        <button type="button" class="page-nav__btn" data-page="5">Page 5</button>
+      </nav>
+
+      <div class="preview-viewport" id="preview-viewport">
+        <div class="preview-frame" id="preview-frame">
+          <div class="preview-scaler" id="preview-scaler">
+            <!-- .page nodes injected here by app.js -->
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ============ DETAIL / EXPLORATION PANEL ============ -->
-    <section class="detail" id="detail-panel" hidden aria-live="polite">
-      <div class="detail__inner">
-        <div class="detail__content" id="detail-content">
-          <!-- Injected by js/app.js -->
-        </div>
-      </div>
-    </section>
+      <div class="thumbnail-strip" id="thumbnail-strip" aria-label="Page thumbnails"></div>
+    </div>
+  </section>
 
-    <!-- ============ ABOUT ============ -->
-    <section class="about" id="about">
-      <div class="about__inner">
-        <h2 class="about__heading">About the Evergreen Creativity Project</h2>
-        <p>Throughout the 2026–27 school year, you’ll explore how creative mindsets can be deliberately infused into the lessons and projects you already teach.</p>
-        <p><strong>Your challenge:</strong> Select and integrate at least <strong>two different creative mindsets</strong> into an existing lesson or project. As you experiment, you’ll have opportunities to implement, observe, reflect, and refine your approach.</p>
-        <p>At the end of the year, you’ll share what you tried and what you learned, contributing to a <strong>collective Creativity Toolkit</strong> of real classroom examples available to all teachers at Evergreen.</p>
-        <p class="about__mindset-list">
-          <span>Imaginative</span>
-          <span aria-hidden="true">•</span>
-          <span>Inquisitive</span>
-          <span aria-hidden="true">•</span>
-          <span>Persistent</span>
-          <span aria-hidden="true">•</span>
-          <span>Collaborative</span>
-          <span aria-hidden="true">•</span>
-          <span>Disciplined</span>
-        </p>
-        <p class="about__source">Produced using Evergreen’s Creativity Toolkit document.</p>
-      </div>
-    </section>
+</main>
 
-  </main>
+<!-- Offscreen export stage: full-resolution, untransformed clone used for PDF/PNG capture -->
+<div id="export-stage" aria-hidden="true"></div>
 
-  <!-- ============ FOOTER ============ -->
-  <footer class="site-footer">
-    <p>Evergreen Creativity Project | 2026&ndash;27</p>
-  </footer>
+<footer class="app-footer">
+  <p>Evergreen Creativity Toolkit Builder &middot; Static, local-only tool &middot; No account, login, or server required.</p>
+</footer>
 
-  <script src="data/mindsets.js"></script>
-  <script src="js/app.js"></script>
+<script src="assets/vendor/jspdf.umd.min.js"></script>
+<script src="assets/vendor/html2canvas.min.js"></script>
+<script src="data/mindsets.js"></script>
+<script src="data/formOptions.js"></script>
+<script src="js/pages.js"></script>
+<script src="js/app.js"></script>
+<script src="js/export.js"></script>
 </body>
 </html>

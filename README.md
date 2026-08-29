@@ -1,63 +1,71 @@
-# Evergreen Creativity Mindsets
+# Evergreen Creativity Toolkit Builder
 
-A static, single-page reference site for Evergreen School's 2026–27 Creativity
-Program. It gives teachers a fast, browsable way to explore the five
-creativity mindsets — **Imaginative, Inquisitive, Persistent, Collaborative,**
-and **Disciplined** — and the classroom practices associated with each one.
+A static, single-page tool that lets Evergreen School teachers document a
+lesson or project where they deliberately integrated one of the five
+2026&ndash;27 creativity mindsets &mdash; **Imaginative, Inquisitive,
+Persistent, Collaborative,** and **Disciplined** &mdash; and export it as a
+polished, publication-ready, five-page US Letter PDF. Individual teacher
+entries are designed to be combined later into one collective Evergreen
+Creativity Toolkit, so every entry shares identical dimensions, margins,
+typography, and page architecture &mdash; only content and mindset color vary.
 
-No build step, server, database, login, or paid API is required. The whole
-site is HTML, CSS, and vanilla JavaScript, and it is designed to be hosted
-directly on GitHub Pages.
+No build step, server, database, login, or account is required. Everything
+is HTML, CSS, and vanilla JavaScript, and the whole thing runs entirely in
+the teacher's browser — nothing they type is ever transmitted anywhere.
 
 ## What it does
 
-- A hero section introduces the five-mindset framework.
-- Five mindset cards are generated from a single data file. Clicking a card
-  expands an in-page detail panel (no page navigation) with:
-  - a one-line description, short intro paragraph, and pull quote
-  - an accordion: **What It Looks Like**, **Practices to Try**, **Teacher
-    Moves**
-- Only one mindset is expanded at a time, and only one card shows as
-  "selected" at a time.
-- Accordions are keyboard accessible, animate open/closed, and use
-  `aria-expanded` / `aria-controls`.
-- The header compacts as you scroll and offers quick links to Home, Explore
-  the Mindsets, and About the Project.
-- Fully responsive: 5-column grid on desktop, 2–3 columns on tablet, single
-  column on mobile.
+- A guided, five-section form (Context, Summary, Integrating the Mindset,
+  Logistics, Words of Wisdom) built as an accordion, so teachers can freely
+  revisit earlier sections instead of following a rigid wizard.
+- A live, true-to-scale US Letter preview of all five pages that updates as
+  the teacher types, with page navigation tabs and clickable thumbnails.
+- Word counters (with gentle, non-blocking guidance) on the two ~50-word
+  fields.
+- Automatic content-overflow detection: if a field's text would visually
+  overflow its page, the affected page is flagged and PDF export is
+  blocked until it's shortened — text is never silently truncated or
+  shrunk.
+- One-click **Download PDF** producing a true 8.5×11in, 5-page PDF with a
+  genuinely clickable hyperlink to the teacher's lesson resources.
+- **Download Current Page as PNG** and **Download All Pages as Images** for
+  quick sharing of a single page.
+- Automatic local-only autosave (`localStorage`) plus secondary, low-key
+  **Export/Import Entry Data (.json)** controls for manual backup, and a
+  confirmed **Start New Entry** reset.
 
 ## File structure
 
 ```
 /
-├── index.html          Page structure (hero, card grid, detail panel, about, footer)
+├── index.html              Page shell: form column + live preview column
 ├── css/
-│   └── styles.css       All visual styling — colors, type, layout, animation
+│   ├── styles.css           Application chrome — header, form, buttons, preview shell
+│   └── print.css            The US Letter publication page design itself
 ├── js/
-│   └── app.js            Renders cards + accordions from data, handles all interaction
+│   ├── pages.js              Builds the HTML for all 5 pages from state (shared by preview + export)
+│   ├── app.js                State, form wiring, live preview rendering, validation, autosave
+│   └── export.js             PDF and PNG generation
 ├── data/
-│   └── mindsets.js        All mindset content, as a single MINDSETS array
-├── assets/                Reserved for future images/icons
+│   ├── mindsets.js            Central mindset data: names, colors, descriptors, guidance
+│   └── formOptions.js         Subject / grade-level / time-required option lists
+├── assets/
+│   └── vendor/                 Local copies of jsPDF and html2canvas (no CDN dependency)
+├── .nojekyll
 └── README.md
 ```
 
-There is intentionally **no per-mindset HTML** in `index.html`. Everything
-under the hero is built at runtime from `data/mindsets.js`, so adding a
-mindset, reordering practices, or rewriting copy never requires touching the
-markup.
-
 ## Running it locally
 
-Because the site is plain static files, you can just open `index.html` in a
-browser. For a closer match to how GitHub Pages serves it (and to avoid any
-browser quirks with `file://` URLs), run a tiny local server from the project
-root instead:
+Because it's plain static files, you can open `index.html` directly in a
+browser, or run a tiny local server from the project root for a closer
+match to GitHub Pages:
 
 ```bash
-python3 -m http.server 8000
+python3 -m http.server 8123
 ```
 
-Then visit `http://localhost:8000` in your browser.
+Then visit `http://localhost:8123`.
 
 ## Deploying with GitHub Pages
 
@@ -65,124 +73,122 @@ Then visit `http://localhost:8000` in your browser.
 2. In the repo, go to **Settings → Pages**.
 3. Under **Build and deployment**, set **Source** to "Deploy from a branch."
 4. Choose the branch (e.g. `main`) and the `/ (root)` folder, then save.
-5. GitHub will publish the site at `https://<username>.github.io/<repo>/`.
+5. GitHub publishes the site at `https://<username>.github.io/<repo>/`.
 
-No further configuration is needed — there's no build step to run.
+The `.nojekyll` file is already present so GitHub Pages serves the `assets/`
+and other folders as-is, with no build step.
 
-## How to modify mindset content
+## Which file controls what
 
-Open [`data/mindsets.js`](data/mindsets.js). It exports a single `MINDSETS`
-array with one object per mindset:
+- **Evergreen color palette** — the `:root` block at the top of
+  [`css/styles.css`](css/styles.css) (`--teal-deep`, `--teal-mid`,
+  `--teal-darkest`, `--mint`, `--olive`, `--gold`, `--gold-deep`,
+  `--orange`, `--cream`). The publication page design in
+  [`css/print.css`](css/print.css) reads the same brand variables plus the
+  per-mindset `--mindset-color` / `--mindset-text` custom properties that
+  `js/pages.js` sets inline on each `.page`.
+- **Mindset information** (name, color, text color, descriptor, tagline,
+  builder-only guidance) — [`data/mindsets.js`](data/mindsets.js). This is
+  the single source of truth; nothing about a mindset is duplicated
+  elsewhere. To retheme or add a mindset, edit this file only.
+- **Form options** (Subjects, Grade Levels, Time Required choices) —
+  [`data/formOptions.js`](data/formOptions.js).
+- **The US Letter page design** — [`css/print.css`](css/print.css) defines
+  every page's dimensions, margins, typography, and footer system;
+  [`js/pages.js`](js/pages.js) defines the markup for all five pages. Both
+  files are shared, unmodified, between the on-screen live preview and the
+  offscreen export capture, so what a teacher sees is exactly what gets
+  exported.
 
-```js
-{
-  id,             // slug used in URLs/DOM ids, e.g. "imaginative"
-  name,           // display name
-  tagline,        // one-sentence description shown on the card and detail header
-  keywords,       // 3 short words shown as pills on the card
-  icon,           // one of: "spark", "compass", "mountain", "people", "pencil"
-  quote,          // pull quote shown in the detail panel
-  introduction,   // short paragraph
-  whatItLooksLike: [ "...", "..." ],
-  practices: [
-    { title, description, examples: ["...", "..."], purpose }
-  ],
-  teacherMoves: [ "...", "..." ]
-}
-```
+## How PDF generation works
 
-Edit any field's text directly — the page re-renders itself from this data,
-so no other file needs to change. To add a sixth mindset, copy an existing
-object, give it a new `id`, and add a matching accent color pair (see
-"Colors, icons, and style variables" below).
+Each of the five pages is rendered from the exact same markup used in the
+live preview into an offscreen, full-resolution (816×1056px = 8.5×11in @
+96dpi), untransformed container (`#export-stage` in `index.html`). Each
+page is then captured with **html2canvas** at 2.5× scale and placed into a
+**jsPDF** document sized to true US Letter (8.5×11in) as a high-quality
+JPEG image — one image per page, so typography, layout, colors, and page
+breaks are pixel-faithful to what the teacher saw while editing. This
+matters because dozens of separately-authored entries need to look like one
+consistent publication, not five ad hoc canvases.
 
-## Adding classroom examples later
+The tradeoff of this approach: body text in the exported PDF is not
+selectable or searchable, since each page is fundamentally an embedded
+image. Given the requirement that every entry share identical layout and
+typography with no drift, this was chosen over hand-implementing PDF text
+layout (which would risk inconsistent wrapping/kerning across browsers and
+entries). See `js/export.js` for the full rationale in comments.
 
-Each `practices[].examples` entry is currently a plain string. The data
-model is intentionally simple today but was designed to grow — the project
-brief calls for future support for teacher-submitted examples, grade-level
-and subject filtering, and more. When that's needed:
+## How the clickable hyperlink is preserved
 
-1. Change example entries from strings to objects, e.g.
-   `{ text: "Think–Pair–Share", gradeLevel: "K-2", subject: "ELA", teacherSubmitted: true }`.
-2. Update the `.map()` calls in `js/app.js` (`practice-group__examples`) to
-   read `.text` instead of the raw string, and to render any new metadata
-   you want visible (a small tag, a filter chip, etc.).
-3. Filtering UI (by grade, subject, etc.) can be added as controls above the
-   `mindset-grid` or above the accordion, filtering the `MINDSETS` array (or
-   a flattened examples list) before rendering.
+Because each page is otherwise a flattened image, the Page 4 "View Lesson &
+Resources →" link would normally stop being clickable. To prevent that,
+`js/export.js` reads the actual on-page pixel position of that button
+(via `getBoundingClientRect`) right before capturing Page 4, converts it to
+inches, and adds a real jsPDF link annotation (`doc.link(x, y, w, h, {
+url })`) at that exact location on top of the image. The result is a
+normal, standards-compliant PDF `/Link` annotation with a `/URI` action —
+genuinely clickable (and screen-reader/PDF-tool discoverable) in any PDF
+viewer, verified by inspecting the raw PDF bytes during development.
 
-This keeps the current interface simple while leaving room to grow without a
-rebuild.
+## How local autosave works
 
-## Colors, icons, and style variables
+Every field edit updates an in-memory `state` object (see the top of
+`js/app.js` for its shape) and, debounced by ~300ms, writes it as JSON to
+`localStorage` under the key `evergreenToolkitEntry`. On page load, that
+key is read back and used to repopulate the form and preview. Nothing is
+ever sent over the network — there is no server, API, or analytics call
+anywhere in the app. **Export Entry Data (.json)** / **Import Entry Data
+(.json)** write/read that same JSON shape to/from a file, for manual backup
+or moving an in-progress entry to another device.
 
-Everything visual is controlled from the top of
-[`css/styles.css`](css/styles.css) in the `:root` block:
+## Technical limitations to know about
 
-- `--color-*` — the neutral palette (background, ink, borders, surfaces),
-  tinted toward Evergreen's dark teal rather than pure black/gray.
-- `--brand-*` — the Evergreen School brand colors, pulled directly from
-  evergreenschool.org: `--brand-teal-deep` (#00555C, header/about/footer),
-  `--brand-teal-darkest` (#172C2E, footer/ink), `--brand-teal-mid` (#0E7178),
-  `--brand-mint` / `--brand-mint-tint` (#B7F4D8-family, light accents and
-  text on dark backgrounds), `--brand-olive` (#AAB132, the "Evergreen"
-  wordmark color), `--brand-gold` / `--brand-gold-deep` (#FFC166 / #C97A2E,
-  hover states and the hero headline emphasis), and `--brand-orange` /
-  `--brand-cream` (#FA9F4D / #FFE0B4, reserved for future accents).
-- `--accent-<mindset>` / `--accent-<mindset>-bg` — the five mindset accent
-  colors and their soft background tints. Each is a deepened, text-safe
-  shade drawn from the `--brand-*` family above (olive for Imaginative,
-  teal for Inquisitive, gold for Persistent, green for Collaborative, slate
-  for Disciplined) so the five mindsets read as a family rather than a
-  generic rainbow. Each mindset's accent is wired to its card and detail
-  panel via `--accent` / `--accent-bg` custom properties set per
-  `data-mindset` (see the "Per-mindset accent wiring" rules near the bottom
-  of the card styles, and the inline `style.setProperty` calls in
-  `js/app.js`).
-- `--font-display` / `--font-body` — the two Google Fonts in use, matching
-  evergreenschool.org's own pairing: Barlow Condensed for headings/quotes,
-  Inter for body text.
-- `--radius-*`, `--shadow-*`, `--transition-*` — shared shape, elevation,
-  and animation tokens used across cards, panels, and accordions.
+- **Exported PDF text isn't selectable/searchable** (see above) — it's a
+  deliberate tradeoff for perfect visual consistency across submissions.
+- **PDF file size** is a few hundred KB to ~1MB for a typical five-page
+  entry (JPEG-compressed page images at 2.5× resolution). This keeps
+  quality high while staying reasonable for email/sharing.
+- **"Download All Pages as Images"** triggers five sequential browser
+  downloads rather than a single zip file (no bundling library is used, to
+  keep the dependency footprint small and avoid an extra build step).
+  Browsers may prompt to allow multiple downloads the first time.
+- **Overflow detection** measures actual rendered DOM height against each
+  page's content area, so it responds to real text length, font rendering,
+  and line-wrapping — but it only runs on data already in the form. Pasting
+  extremely long content will correctly flag overflow and block PDF export
+  until shortened.
+- **`jsPDF` and `html2canvas`** are vendored locally in `assets/vendor/`
+  (not loaded from a CDN), so the app works fully offline once loaded and
+  isn't affected by CDN outages — but it also means upgrading those
+  libraries requires manually replacing those two files.
+- **Future-ready, not future-built**: the data model in `data/mindsets.js`
+  and the flat `state` shape in `js/app.js` were kept simple and
+  serializable on purpose, so that later features mentioned in the original
+  brief (a shared example library, filtering by grade/subject/mindset,
+  photo uploads, editing past submissions, QR codes, etc.) can be layered
+  on without restructuring what's here. None of that is built yet.
 
-To re-sync with the live Evergreen School site if its brand colors change,
-revisit evergreenschool.org and update the `--brand-*` values — the rest of
-the site (including the five mindset accents) is derived from them.
+## Before shipping a change
 
-Icons live inline in `js/app.js` as an `ICONS` object of small SVG strings
-(no icon library/CDN dependency). To change a mindset's icon, either edit
-its existing SVG or add a new key to `ICONS` and reference it from that
-mindset's `icon` field in `data/mindsets.js`.
-
-## Linking to a future teacher-output generator
-
-The data model (`id`, structured `practices`, and reserved-but-unused
-metadata fields like `gradeLevel`, `subject`, `duration`, `grouping`,
-`materials`) is meant to double as an API contract for a second application
-— for example, a tool that generates a printable lesson plan or reflection
-artifact from a chosen mindset and practice.
-
-Two straightforward integration paths:
-
-- **Static handoff:** a second app reads `data/mindsets.js` (or a
-  JSON export of it) directly, since it's already a plain, dependency-free
-  data structure.
-- **Deep link:** add a "Create a lesson artifact" button to the detail panel
-  that links to the second app with the mindset `id` (and, later, a chosen
-  practice) as a query parameter, e.g. `?mindset=imaginative&practice=...`.
-
-Neither path requires changes to this site's core architecture — only an
-added link/button and, if needed, a small JSON export step.
-
-## Before you ship changes
-
-A quick manual pass is worth doing after any edit:
-
-- All five cards open and close correctly, and only one is active at a time.
-- Every accordion opens, closes, and is operable with the keyboard (Tab +
-  Enter/Space).
-- The site looks right at desktop, tablet, and mobile widths.
-- No errors appear in the browser console.
-- Spelling of the five mindset names is correct: **Imaginative, Inquisitive,
-  Persistent, Collaborative, Disciplined.**
+- All five mindsets: colors, descriptors, and guidance update correctly
+  everywhere (picker, guidance panel, all 5 preview pages) when selected —
+  including switching mindsets after content already exists, with no data
+  loss.
+- Word counters behave correctly at 0–50, 51–60, and 61+ words without
+  ever truncating input.
+- Multi-select Subjects/Grades, the Time "Other" reveal, and the Subject
+  "Other" reveal all work and persist through save/reload.
+- An invalid URL in the Lesson Link field shows a gentle (non-blocking)
+  warning; a valid one renders a working "View Lesson & Resources →" link
+  on Page 4.
+- Required-field validation correctly blocks PDF export and links directly
+  to the offending accordion section; optional fields can stay empty.
+- Refreshing the browser restores the in-progress entry from
+  `localStorage`; **Start New Entry** clears it only after confirmation.
+- Desktop, tablet, and mobile widths all work with no horizontal page
+  scrolling; the exported PDF/PNG dimensions never change regardless of
+  screen size.
+- A generated PDF actually opens: exactly 5 pages, true 8.5×11in portrait,
+  no clipped content, correct mindset color and page numbering, and a
+  working link on Page 4.
