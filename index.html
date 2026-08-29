@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evergreen Creativity Mindsets</title>
+  <meta name="description" content="A practical toolkit of five creativity mindsets — Imaginative, Inquisitive, Persistent, Collaborative, and Disciplined — for Evergreen School teachers." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header" id="site-header">
+    <div class="site-header__inner">
+      <a class="site-header__brand" href="#top">
+        <span class="site-header__mark" aria-hidden="true"></span>
+        <span class="site-header__title"><span class="site-header__brand-accent">Evergreen</span> Creativity Mindsets</span>
+      </a>
+      <nav class="site-header__nav" aria-label="Primary">
+        <a href="#top">Home</a>
+        <a href="#mindsets">Explore the Mindsets</a>
+        <a href="#about">About the Project</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="top">
+      <div class="hero__inner">
+        <p class="hero__eyebrow">Evergreen Creativity Program</p>
+        <h1 class="hero__headline">Five Mindsets for <span class="hero__headline-accent">Creative Learning</span></h1>
+        <p class="hero__sub">Explore practical ways to help students imagine, inquire, persist, collaborate, and develop the discipline to turn ideas into meaningful work.</p>
+        <p class="hero__cta-text">Select a mindset to explore what it looks like in practice and discover strategies you can incorporate into your lessons.</p>
+      </div>
+    </section>
+
+    <!-- ============ MINDSET GRID ============ -->
+    <section class="mindsets" id="mindsets" aria-label="The five creativity mindsets">
+      <div class="mindsets__inner">
+        <div class="mindset-grid" id="mindset-grid">
+          <!-- Cards injected by js/app.js from data/mindsets.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DETAIL / EXPLORATION PANEL ============ -->
+    <section class="detail" id="detail-panel" hidden aria-live="polite">
+      <div class="detail__inner">
+        <div class="detail__content" id="detail-content">
+          <!-- Injected by js/app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section class="about" id="about">
+      <div class="about__inner">
+        <h2 class="about__heading">About the Evergreen Creativity Project</h2>
+        <p>Throughout the 2026–27 school year, you’ll explore how creative mindsets can be deliberately infused into the lessons and projects you already teach.</p>
+        <p><strong>Your challenge:</strong> Select and integrate at least <strong>two different creative mindsets</strong> into an existing lesson or project. As you experiment, you’ll have opportunities to implement, observe, reflect, and refine your approach.</p>
+        <p>At the end of the year, you’ll share what you tried and what you learned, contributing to a <strong>collective Creativity Toolkit</strong> of real classroom examples available to all teachers at Evergreen.</p>
+        <p class="about__mindset-list">
+          <span>Imaginative</span>
+          <span aria-hidden="true">•</span>
+          <span>Inquisitive</span>
+          <span aria-hidden="true">•</span>
+          <span>Persistent</span>
+          <span aria-hidden="true">•</span>
+          <span>Collaborative</span>
+          <span aria-hidden="true">•</span>
+          <span>Disciplined</span>
+        </p>
+        <p class="about__source">Produced using Evergreen’s Creativity Toolkit document.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <p>Evergreen Creativity Project | 2026&ndash;27</p>
+  </footer>
+
+  <script src="data/mindsets.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
