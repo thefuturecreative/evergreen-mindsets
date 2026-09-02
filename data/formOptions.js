@@ -27,6 +27,9 @@ const GRADE_OPTIONS = [
   "Grade 3",
   "Grade 4",
   "Grade 5",
+  "Grade 6",
+  "Grade 7",
+  "Grade 8",
 ];
 
 const TIME_OPTIONS = [
