@@ -28,6 +28,15 @@ function textToParagraphs(text) {
     .join("");
 }
 
+// Renders a list of short free-text entries as bullets, skipping blanks.
+function bulletList(items) {
+  const filtered = (items || []).filter((i) => i && i.trim());
+  if (!filtered.length) return "";
+  return `<ul class="content-block__list">${filtered
+    .map((i) => `<li>${escapeHtml(i.trim()).replace(/\n/g, "<br>")}</li>`)
+    .join("")}</ul>`;
+}
+
 function wordCount(text) {
   const trimmed = String(text || "").trim();
   if (!trimmed) return 0;
@@ -118,7 +127,7 @@ function renderPage2(state) {
     <h1 class="page-title">Lesson Summary</h1>
     <section class="content-block">
       <h2 class="content-block__heading">Key Learning Objective(s)</h2>
-      <div class="content-block__body">${textToParagraphs(state.objectives) || emptyState("Learning objectives will appear here.")}</div>
+      <div class="content-block__body">${bulletList(state.objectives) || emptyState("Learning objectives will appear here.")}</div>
     </section>
     <section class="content-block">
       <h2 class="content-block__heading">Lesson / Project Overview</h2>
@@ -147,11 +156,30 @@ function renderPage3(state) {
   return pageShell(3, mindset, body);
 }
 
+// Renders up to three lesson/resource links, each on its own line and
+// separated by a divider rule, per the "clear line between each item"
+// requirement. A single link keeps the original "View Lesson & Resources"
+// wording; multiple links are numbered.
+function resourceLinksList(links) {
+  const valid = (links || []).map((l) => (l || "").trim()).filter((l) => l && isLikelyValidUrl(l));
+  if (!valid.length) return "";
+  const multiple = valid.length > 1;
+  return `<div class="resource-link-list">${valid
+    .map(
+      (url, i) => `
+      <div class="resource-link-list__item">
+        <a class="resource-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${
+          multiple ? `View Resource ${i + 1} &rarr;` : "View Lesson &amp; Resources &rarr;"
+        }</a>
+      </div>`
+    )
+    .join("")}</div>`;
+}
+
 // ---------- PAGE 4 — LOGISTICS ----------
 function renderPage4(state) {
   const mindset = getMindset(state);
   const timeValue = state.time === "Other" && state.timeOther ? state.timeOther : state.time;
-  const hasValidLink = state.link && isLikelyValidUrl(state.link);
 
   const body = `
     ${eyebrow("Making It Happen")}
@@ -165,11 +193,9 @@ function renderPage4(state) {
       <div class="content-block__body">${textToParagraphs(state.resources) || emptyState("No special resources listed.")}</div>
     </section>
     <section class="content-block">
-      <h2 class="content-block__heading">Lesson / Project Link</h2>
+      <h2 class="content-block__heading">Lesson / Project Link(s)</h2>
       <div class="content-block__body">
-        ${hasValidLink
-          ? `<a class="resource-link" href="${escapeHtml(state.link)}" target="_blank" rel="noopener noreferrer">View Lesson &amp; Resources &rarr;</a>`
-          : emptyState("No link provided.")}
+        ${resourceLinksList(state.links) || emptyState("No link provided.")}
       </div>
     </section>`;
   return pageShell(4, mindset, body);

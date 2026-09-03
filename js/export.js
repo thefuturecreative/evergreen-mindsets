@@ -39,19 +39,24 @@ function clearExportStage() {
   $("#export-stage").innerHTML = "";
 }
 
-function getResourceLinkRectInInches(pageEl) {
-  const link = pageEl.querySelector(".resource-link");
-  if (!link) return null;
+// Returns the on-page position (in inches) of every resource link on the
+// page, so each can get its own real jsPDF link annotation — there may be
+// up to three (see resourceLinksList in pages.js).
+function getResourceLinkRectsInInches(pageEl) {
+  const links = pageEl.querySelectorAll(".resource-link");
+  if (!links.length) return [];
   const pageRect = pageEl.getBoundingClientRect();
-  const linkRect = link.getBoundingClientRect();
   const PX_PER_IN = pageRect.width / 8.5;
-  return {
-    x: (linkRect.left - pageRect.left) / PX_PER_IN,
-    y: (linkRect.top - pageRect.top) / PX_PER_IN,
-    w: linkRect.width / PX_PER_IN,
-    h: linkRect.height / PX_PER_IN,
-    url: link.getAttribute("href"),
-  };
+  return Array.from(links).map((link) => {
+    const linkRect = link.getBoundingClientRect();
+    return {
+      x: (linkRect.left - pageRect.left) / PX_PER_IN,
+      y: (linkRect.top - pageRect.top) / PX_PER_IN,
+      w: linkRect.width / PX_PER_IN,
+      h: linkRect.height / PX_PER_IN,
+      url: link.getAttribute("href"),
+    };
+  });
 }
 
 async function captureCanvas(pageEl) {
@@ -101,14 +106,16 @@ async function handleDownloadPdf() {
       const pageEl = await renderPageForExport(n);
       const canvas = await captureCanvas(pageEl);
       const imgData = canvas.toDataURL("image/jpeg", 0.92);
-      const linkRect = getResourceLinkRectInInches(pageEl);
+      const linkRects = getResourceLinkRectsInInches(pageEl);
 
       if (n > 1) doc.addPage("letter", "portrait");
       doc.addImage(imgData, "JPEG", 0, 0, 8.5, 11, undefined, "FAST");
 
-      if (linkRect && linkRect.url) {
-        doc.link(linkRect.x, linkRect.y, linkRect.w, linkRect.h, { url: linkRect.url });
-      }
+      linkRects.forEach((linkRect) => {
+        if (linkRect.url) {
+          doc.link(linkRect.x, linkRect.y, linkRect.w, linkRect.h, { url: linkRect.url });
+        }
+      });
     }
 
     clearExportStage();

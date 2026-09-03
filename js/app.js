@@ -9,9 +9,10 @@
  *   title, teacherName: string,
  *   subjects: string[], subjectOther: string,
  *   grades: string[],
- *   objectives, overview, integration: string,
+ *   objectives: [string, string, string],
+ *   overview, integration: string,
  *   time: string, timeOther: string,
- *   resources: string, link: string,
+ *   resources: string, links: [string, string, string],
  *   wisdom: [string, string, string]
  * }
  */
@@ -20,6 +21,8 @@ const STORAGE_KEY = "evergreenToolkitEntry";
 const NATIVE_PAGE_WIDTH = 816; // 8.5in @ 96dpi
 const NATIVE_PAGE_HEIGHT = 1056; // 11in @ 96dpi
 const THUMB_WIDTH = 108;
+const OVERVIEW_WORD_TARGET = 100;
+const INTEGRATION_WORD_TARGET = 100;
 
 function defaultState() {
   return {
@@ -29,15 +32,27 @@ function defaultState() {
     subjects: [],
     subjectOther: "",
     grades: [],
-    objectives: "",
+    objectives: ["", "", ""],
     overview: "",
     integration: "",
     time: "",
     timeOther: "",
     resources: "",
-    link: "",
+    links: ["", "", ""],
     wisdom: ["", "", ""],
   };
+}
+
+// Coerces a field that used to be a single string into a fixed-length
+// array, so entries saved before the multi-box update keep working.
+function normalizeTriple(value) {
+  if (Array.isArray(value)) {
+    return [value[0] || "", value[1] || "", value[2] || ""];
+  }
+  if (typeof value === "string" && value.trim()) {
+    return [value, "", ""];
+  }
+  return ["", "", ""];
 }
 
 let state = defaultState();
@@ -63,9 +78,10 @@ function loadState() {
     state = Object.assign(defaultState(), parsed);
     if (!Array.isArray(state.subjects)) state.subjects = [];
     if (!Array.isArray(state.grades)) state.grades = [];
-    if (!Array.isArray(state.wisdom) || state.wisdom.length !== 3) {
-      state.wisdom = [state.wisdom?.[0] || "", state.wisdom?.[1] || "", state.wisdom?.[2] || ""];
-    }
+    state.wisdom = normalizeTriple(state.wisdom);
+    state.objectives = normalizeTriple(state.objectives);
+    state.links = normalizeTriple(parsed.links !== undefined ? parsed.links : parsed.link);
+    delete state.link;
   } catch (e) {
     console.warn("Could not load saved entry:", e);
   }
@@ -87,11 +103,15 @@ const saveState = debounce(() => {
 function populateFormFromState() {
   $("#field-title").value = state.title;
   $("#field-teacher").value = state.teacherName;
-  $("#field-objectives").value = state.objectives;
+  $("#field-objective-1").value = state.objectives[0];
+  $("#field-objective-2").value = state.objectives[1];
+  $("#field-objective-3").value = state.objectives[2];
   $("#field-overview").value = state.overview;
   $("#field-integration").value = state.integration;
   $("#field-resources").value = state.resources;
-  $("#field-link").value = state.link;
+  $("#field-link-1").value = state.links[0];
+  $("#field-link-2").value = state.links[1];
+  $("#field-link-3").value = state.links[2];
   $("#field-wisdom-1").value = state.wisdom[0];
   $("#field-wisdom-2").value = state.wisdom[1];
   $("#field-wisdom-3").value = state.wisdom[2];
@@ -113,10 +133,12 @@ function populateFormFromState() {
     btn.setAttribute("aria-pressed", String(btn.dataset.mindset === state.mindset));
   });
 
-  updateWordCounter("overview");
-  updateWordCounter("integration");
+  updateWordCounter("overview", OVERVIEW_WORD_TARGET);
+  updateWordCounter("integration", INTEGRATION_WORD_TARGET);
   updateMindsetDependentUI();
-  validateLinkField();
+  validateLinkField(1);
+  validateLinkField(2);
+  validateLinkField(3);
 }
 
 function $(sel, root = document) {
@@ -185,14 +207,14 @@ function buildTimeSelect() {
 
 // ---------------- Word counters ----------------
 
-function updateWordCounter(fieldKey) {
+function updateWordCounter(fieldKey, target) {
   const textarea = $(`#field-${fieldKey}`);
   const counter = $(`#${fieldKey}-counter`);
   const count = wordCount(textarea.value);
-  counter.textContent = `${count} / 50 words`;
+  counter.textContent = `${count} / ${target} words`;
   let stateAttr = "ok";
-  if (count > 60) stateAttr = "strong";
-  else if (count > 50) stateAttr = "warn";
+  if (count > Math.round(target * 1.2)) stateAttr = "strong";
+  else if (count > target) stateAttr = "warn";
   counter.dataset.state = stateAttr;
   if (stateAttr === "warn") {
     counter.textContent += " — consider tightening this a little.";
@@ -203,9 +225,9 @@ function updateWordCounter(fieldKey) {
 
 // ---------------- Validation ----------------
 
-function validateLinkField() {
-  const value = $("#field-link").value.trim();
-  const warning = $("#link-warning");
+function validateLinkField(idx) {
+  const value = $(`#field-link-${idx}`).value.trim();
+  const warning = $(`#link-${idx}-warning`);
   warning.hidden = value === "" || isLikelyValidUrl(value);
 }
 
@@ -217,7 +239,7 @@ function getRequiredFieldIssues() {
     issues.push({ label: "Subject (please specify “Other”)", section: "context" });
   if (!state.grades.length) issues.push({ label: "At least one Grade Level", section: "context" });
   if (!state.mindset) issues.push({ label: "Creativity Mindset selection", section: "mindset" });
-  if (!state.objectives.trim()) issues.push({ label: "Key Learning Objective(s)", section: "summary" });
+  if (!state.objectives.some((o) => o.trim())) issues.push({ label: "At least one Key Learning Objective", section: "summary" });
   if (!state.overview.trim()) issues.push({ label: "Lesson / Project Overview", section: "summary" });
   if (!state.integration.trim()) issues.push({ label: "Mindset Integration description", section: "mindset" });
   return issues;
@@ -265,9 +287,9 @@ function updateValidationSummary() {
 function updateProgress() {
   const complete = {
     context: !!(state.title.trim() && state.subjects.length && state.grades.length),
-    summary: !!(state.objectives.trim() && state.overview.trim()),
+    summary: !!(state.objectives.some((o) => o.trim()) && state.overview.trim()),
     mindset: !!(state.mindset && state.integration.trim()),
-    logistics: !!(state.time.trim() || state.resources.trim() || state.link.trim()),
+    logistics: !!(state.time.trim() || state.resources.trim() || state.links.some((l) => l.trim())),
     wisdom: state.wisdom.some((w) => w.trim()),
   };
   document.querySelectorAll("#progress-tracker li").forEach((li) => {
@@ -375,8 +397,21 @@ function bindTextField(id, key) {
 function bindEvents() {
   bindTextField("#field-title", "title");
   bindTextField("#field-teacher", "teacherName");
-  bindTextField("#field-objectives", "objectives");
   bindTextField("#field-resources", "resources");
+
+  [1, 2, 3].forEach((n) => {
+    $(`#field-objective-${n}`).addEventListener("input", (e) => {
+      state.objectives[n - 1] = e.target.value;
+      saveState();
+      scheduleRender();
+    });
+    $(`#field-link-${n}`).addEventListener("input", (e) => {
+      state.links[n - 1] = e.target.value;
+      validateLinkField(n);
+      saveState();
+      scheduleRender();
+    });
+  });
 
   $("#field-wisdom-1").addEventListener("input", (e) => {
     state.wisdom[0] = e.target.value;
@@ -396,20 +431,13 @@ function bindEvents() {
 
   $("#field-overview").addEventListener("input", (e) => {
     state.overview = e.target.value;
-    updateWordCounter("overview");
+    updateWordCounter("overview", OVERVIEW_WORD_TARGET);
     saveState();
     scheduleRender();
   });
   $("#field-integration").addEventListener("input", (e) => {
     state.integration = e.target.value;
-    updateWordCounter("integration");
-    saveState();
-    scheduleRender();
-  });
-
-  $("#field-link").addEventListener("input", (e) => {
-    state.link = e.target.value;
-    validateLinkField();
+    updateWordCounter("integration", INTEGRATION_WORD_TARGET);
     saveState();
     scheduleRender();
   });
@@ -510,9 +538,10 @@ function handleImportJson(e) {
       state = Object.assign(defaultState(), parsed);
       if (!Array.isArray(state.subjects)) state.subjects = [];
       if (!Array.isArray(state.grades)) state.grades = [];
-      if (!Array.isArray(state.wisdom) || state.wisdom.length !== 3) {
-        state.wisdom = [state.wisdom?.[0] || "", state.wisdom?.[1] || "", state.wisdom?.[2] || ""];
-      }
+      state.wisdom = normalizeTriple(state.wisdom);
+      state.objectives = normalizeTriple(state.objectives);
+      state.links = normalizeTriple(parsed.links !== undefined ? parsed.links : parsed.link);
+      delete state.link;
       populateFormFromState();
       saveState();
       scheduleRender();

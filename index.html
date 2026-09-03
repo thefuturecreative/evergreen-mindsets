@@ -97,17 +97,28 @@
             <span class="accordion__label">Summary</span>
           </summary>
           <div class="accordion__panel">
-            <div class="field">
-              <label for="field-objectives">Key Learning Objective(s) <span class="required-mark">*</span></label>
-              <p class="field-hint">What are the key learning objectives for this lesson or project?</p>
-              <textarea id="field-objectives" rows="4"></textarea>
-            </div>
+            <fieldset class="field">
+              <legend>Key Learning Objective(s) <span class="required-mark">*</span></legend>
+              <p class="field-hint">What are the key learning objectives for this lesson or project? Add up to three &mdash; each will be displayed as its own bullet.</p>
+              <div class="field">
+                <label for="field-objective-1">Objective 1</label>
+                <textarea id="field-objective-1" rows="2"></textarea>
+              </div>
+              <div class="field">
+                <label for="field-objective-2">Objective 2 <span class="optional-mark">(optional)</span></label>
+                <textarea id="field-objective-2" rows="2"></textarea>
+              </div>
+              <div class="field">
+                <label for="field-objective-3">Objective 3 <span class="optional-mark">(optional)</span></label>
+                <textarea id="field-objective-3" rows="2"></textarea>
+              </div>
+            </fieldset>
 
             <div class="field">
               <label for="field-overview">Lesson / Project Overview <span class="required-mark">*</span></label>
-              <p class="field-hint">In approximately 50 words, briefly describe the lesson or project. What are students learning and what are they doing?</p>
-              <textarea id="field-overview" rows="6"></textarea>
-              <p class="word-counter" id="overview-counter" data-state="ok">0 / 50 words</p>
+              <p class="field-hint">In approximately 100 words, briefly describe the lesson or project. What are students learning and what are they doing?</p>
+              <textarea id="field-overview" rows="8"></textarea>
+              <p class="word-counter" id="overview-counter" data-state="ok">0 / 100 words</p>
             </div>
           </div>
         </details>
@@ -121,9 +132,9 @@
             <p class="mindset-guidance" id="mindset-guidance-text">Select a creativity mindset above to see tailored guidance here.</p>
             <div class="field">
               <label for="field-integration" id="integration-label">Describe how you integrated the mindset <span class="required-mark">*</span></label>
-              <p class="field-hint">In approximately 50 words, describe how you deliberately integrated this creativity mindset into the lesson or project. What did students experience or do differently?</p>
-              <textarea id="field-integration" rows="6"></textarea>
-              <p class="word-counter" id="integration-counter" data-state="ok">0 / 50 words</p>
+              <p class="field-hint">In approximately 100 words, describe how you deliberately integrated this creativity mindset into the lesson or project. What did students experience or do differently?</p>
+              <textarea id="field-integration" rows="8"></textarea>
+              <p class="word-counter" id="integration-counter" data-state="ok">0 / 100 words</p>
             </div>
           </div>
         </details>
@@ -149,12 +160,25 @@
               <textarea id="field-resources" rows="4"></textarea>
             </div>
 
-            <div class="field">
-              <label for="field-link">Link to Lesson or Supporting Materials <span class="optional-mark">(optional)</span></label>
-              <p class="field-hint">Add a link to your lesson plan, Google Doc, Slides, resource folder, or other supporting material.</p>
-              <input type="url" id="field-link" placeholder="https://" inputmode="url">
-              <p class="field-warning" id="link-warning" hidden>That doesn&rsquo;t look like a complete web address. Double-check it before exporting.</p>
-            </div>
+            <fieldset class="field">
+              <legend>Links to Lessons or Supporting Materials <span class="optional-mark">(optional)</span></legend>
+              <p class="field-hint">Add up to three links &mdash; a lesson plan, Google Doc, Slides, resource folder, or other supporting material. Each will appear on the page as its own line, separated by a divider.</p>
+              <div class="field">
+                <label for="field-link-1">Link 1</label>
+                <input type="url" id="field-link-1" placeholder="https://" inputmode="url">
+                <p class="field-warning" id="link-1-warning" hidden>That doesn&rsquo;t look like a complete web address. Double-check it before exporting.</p>
+              </div>
+              <div class="field">
+                <label for="field-link-2">Link 2</label>
+                <input type="url" id="field-link-2" placeholder="https://" inputmode="url">
+                <p class="field-warning" id="link-2-warning" hidden>That doesn&rsquo;t look like a complete web address. Double-check it before exporting.</p>
+              </div>
+              <div class="field">
+                <label for="field-link-3">Link 3</label>
+                <input type="url" id="field-link-3" placeholder="https://" inputmode="url">
+                <p class="field-warning" id="link-3-warning" hidden>That doesn&rsquo;t look like a complete web address. Double-check it before exporting.</p>
+              </div>
+            </fieldset>
           </div>
         </details>
 
@@ -164,7 +188,7 @@
             <span class="accordion__label">Words of Wisdom</span>
           </summary>
           <div class="accordion__panel">
-            <p class="field-hint">Based on your experience, what should another Evergreen teacher know before trying this lesson or project? Keep each response concise.</p>
+            <p class="field-hint">Based on your experience, what should another Evergreen teacher know before trying this lesson or project? Be specific about what strategies or approaches are needed to successfully further the mindset, or how to avoid known challenges during implementation.</p>
             <div class="field">
               <label for="field-wisdom-1">1. Consider&hellip;</label>
               <textarea id="field-wisdom-1" rows="2" placeholder="e.g., Build in extra time for the first attempt — students needed longer than expected to get comfortable."></textarea>

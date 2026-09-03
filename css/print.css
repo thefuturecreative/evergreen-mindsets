@@ -125,6 +125,44 @@
   margin-bottom: 0;
 }
 
+.content-block__list {
+  margin: 0;
+  padding-left: 0.24in;
+}
+
+.content-block__list li {
+  margin-bottom: 0.12in;
+  padding-left: 0.06in;
+}
+
+.content-block__list li::marker {
+  color: var(--mindset-color, var(--teal-deep));
+}
+
+.content-block__list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Lesson/resource links: each on its own line, separated by a divider. */
+.resource-link-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.resource-link-list__item {
+  padding: 0.16in 0;
+  border-bottom: 1px solid rgba(23, 44, 46, 0.15);
+}
+
+.resource-link-list__item:first-child {
+  padding-top: 0;
+}
+
+.resource-link-list__item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 .empty-state {
   font-style: italic;
   color: var(--teal-darkest);
