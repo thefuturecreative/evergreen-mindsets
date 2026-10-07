@@ -257,6 +257,53 @@
   color: var(--teal-darkest);
 }
 
+.cover-status {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  bottom: 0.12in;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08in;
+}
+
+.cover-status__item {
+  display: flex;
+  align-items: center;
+  gap: 0.1in;
+  font-size: 9.5pt;
+  color: var(--teal-darkest);
+}
+
+.cover-status__box {
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 0.19in;
+  height: 0.19in;
+  border: 1.5px solid var(--teal-darkest);
+  border-radius: 3px;
+  background: #ffffff;
+}
+
+.cover-status__box.is-checked {
+  background: var(--mindset-color, var(--teal-deep));
+}
+
+.cover-status__box.is-checked::after {
+  content: "";
+  position: absolute;
+  left: 0.055in;
+  top: 0.005in;
+  width: 0.045in;
+  height: 0.095in;
+  border: solid var(--teal-darkest);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 /* ---------- Page 3: Integrating the Mindset ---------- */
 
 .mindset-badge {

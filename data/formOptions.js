@@ -32,6 +32,12 @@ const GRADE_OPTIONS = [
   "Grade 8",
 ];
 
+const LESSON_STATUS_OPTIONS = [
+  { value: "new", label: "New lesson/project" },
+  { value: "modified", label: "Modified lesson/project" },
+  { value: "existing", label: "Existing lesson/project" },
+];
+
 const TIME_OPTIONS = [
   "Under 30 minutes",
   "30–60 minutes",

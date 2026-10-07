@@ -6,13 +6,13 @@
  *
  * {
  *   mindset: "imaginative" | "inquisitive" | "persistent" | "collaborative" | "disciplined" | null,
- *   title, teacherName: string,
+ *   title: string, teacherNames: [string x 5],
  *   subjects: string[], subjectOther: string,
- *   grades: string[],
+ *   grades: string[], lessonStatus: "" | "new" | "modified" | "existing",
  *   objectives: [string, string, string],
  *   overview, integration: string,
  *   time: string, timeOther: string,
- *   resources: string, links: [string, string, string],
+ *   resources: [string x 5], links: [string, string, string],
  *   wisdom: [string, string, string]
  * }
  */
@@ -28,16 +28,17 @@ function defaultState() {
   return {
     mindset: null,
     title: "",
-    teacherName: "",
+    teacherNames: ["", "", "", "", ""],
     subjects: [],
     subjectOther: "",
     grades: [],
+    lessonStatus: "",
     objectives: ["", "", ""],
     overview: "",
     integration: "",
     time: "",
     timeOther: "",
-    resources: "",
+    resources: ["", "", "", "", ""],
     links: ["", "", ""],
     wisdom: ["", "", ""],
   };
@@ -55,7 +56,34 @@ function normalizeTriple(value) {
   return ["", "", ""];
 }
 
+// Coerces the old single resources textarea (one item per line) into five slots.
+function normalizeResources(value) {
+  const out = ["", "", "", "", ""];
+  const items = Array.isArray(value)
+    ? value
+    : typeof value === "string"
+      ? value.split(/\n+/).map((s) => s.trim()).filter(Boolean)
+      : [];
+  items.slice(0, 5).forEach((v, i) => { out[i] = typeof v === "string" ? v : ""; });
+  if (typeof value === "string" && items.length > 5) {
+    out[4] = items.slice(4).join("; ");
+  }
+  return out;
+}
+
+// Coerces the old single teacherName string (or a saved array) into five slots.
+function normalizeTeacherNames(value) {
+  const out = ["", "", "", "", ""];
+  if (Array.isArray(value)) {
+    value.slice(0, 5).forEach((v, i) => { out[i] = typeof v === "string" ? v : ""; });
+  } else if (typeof value === "string") {
+    out[0] = value;
+  }
+  return out;
+}
+
 let state = defaultState();
+let teacherFieldCount = 1;
 let activePage = 1;
 let overflowFlags = { 1: false, 2: false, 3: false, 4: false, 5: false };
 let isExporting = false;
@@ -82,6 +110,9 @@ function loadState() {
     state.objectives = normalizeTriple(state.objectives);
     state.links = normalizeTriple(parsed.links !== undefined ? parsed.links : parsed.link);
     delete state.link;
+    state.teacherNames = normalizeTeacherNames(parsed.teacherNames !== undefined ? parsed.teacherNames : parsed.teacherName);
+    delete state.teacherName;
+    state.resources = normalizeResources(state.resources);
   } catch (e) {
     console.warn("Could not load saved entry:", e);
   }
@@ -100,15 +131,30 @@ const saveState = debounce(() => {
 
 // ---------------- Form population (used on load + import) ----------------
 
+function updateTeacherFieldVisibility() {
+  document.querySelectorAll(".teacher-field").forEach((el, i) => {
+    el.hidden = i >= teacherFieldCount;
+  });
+  $("#btn-add-teacher").hidden = teacherFieldCount >= 5;
+}
+
 function populateFormFromState() {
   $("#field-title").value = state.title;
-  $("#field-teacher").value = state.teacherName;
+  state.teacherNames.forEach((name, i) => {
+    $(`#field-teacher-${i + 1}`).value = name;
+  });
+  let lastFilled = 0;
+  state.teacherNames.forEach((name, i) => { if (name.trim()) lastFilled = i; });
+  teacherFieldCount = lastFilled + 1;
+  updateTeacherFieldVisibility();
   $("#field-objective-1").value = state.objectives[0];
   $("#field-objective-2").value = state.objectives[1];
   $("#field-objective-3").value = state.objectives[2];
   $("#field-overview").value = state.overview;
   $("#field-integration").value = state.integration;
-  $("#field-resources").value = state.resources;
+  state.resources.forEach((r, i) => {
+    $(`#field-resource-${i + 1}`).value = r;
+  });
   $("#field-link-1").value = state.links[0];
   $("#field-link-2").value = state.links[1];
   $("#field-link-3").value = state.links[2];
@@ -127,6 +173,10 @@ function populateFormFromState() {
 
   document.querySelectorAll("#grade-checkboxes input[type=checkbox]").forEach((cb) => {
     cb.checked = state.grades.includes(cb.value);
+  });
+
+  document.querySelectorAll("#status-checkboxes input[type=checkbox]").forEach((cb) => {
+    cb.checked = cb.value === state.lessonStatus;
   });
 
   document.querySelectorAll("#mindset-picker-grid .mindset-option").forEach((btn) => {
@@ -177,9 +227,11 @@ function updateMindsetDependentUI() {
   $("#mindset-guidance-text").textContent = m
     ? m.guidance
     : "Select a creativity mindset above to see tailored guidance here.";
-  $("#integration-label").innerHTML = m
-    ? `Describe how you integrated the ${m.name} mindset <span class="required-mark">*</span>`
-    : `Describe how you integrated the mindset <span class="required-mark">*</span>`;
+  const dispositionName = m ? `the ${m.name} disposition` : "the disposition";
+  $("#integration-label").innerHTML =
+    `How did you nurture ${dispositionName}? <span class="required-mark">*</span>`;
+  $("#integration-hint").textContent =
+    `In approximately 100 words, describe the instructional strategies you used to promote and nurture ${m ? dispositionName : "this disposition"} within this lesson or project. What did you deliberately do to create opportunities for students to develop and demonstrate this disposition?`;
 
   document.documentElement.style.setProperty("--active-mindset-color", m ? m.color : "#00555C");
 }
@@ -196,6 +248,16 @@ function buildCheckboxGroup(containerId, options, name) {
       </label>`;
     })
     .join("");
+}
+
+function buildStatusCheckboxes() {
+  $("#status-checkboxes").innerHTML = LESSON_STATUS_OPTIONS.map(
+    (opt) => `
+      <label class="checkbox-pill">
+        <input type="checkbox" name="lessonStatus" value="${opt.value}">
+        <span>${escapeHtml(opt.label)}</span>
+      </label>`
+  ).join("");
 }
 
 function buildTimeSelect() {
@@ -289,7 +351,7 @@ function updateProgress() {
     context: !!(state.title.trim() && state.subjects.length && state.grades.length),
     summary: !!(state.objectives.some((o) => o.trim()) && state.overview.trim()),
     mindset: !!(state.mindset && state.integration.trim()),
-    logistics: !!(state.time.trim() || state.resources.trim() || state.links.some((l) => l.trim())),
+    logistics: !!(state.time.trim() || state.resources.some((r) => r.trim()) || state.links.some((l) => l.trim())),
     wisdom: state.wisdom.some((w) => w.trim()),
   };
   document.querySelectorAll("#progress-tracker li").forEach((li) => {
@@ -396,8 +458,23 @@ function bindTextField(id, key) {
 
 function bindEvents() {
   bindTextField("#field-title", "title");
-  bindTextField("#field-teacher", "teacherName");
-  bindTextField("#field-resources", "resources");
+  [1, 2, 3, 4, 5].forEach((n) => {
+    $(`#field-resource-${n}`).addEventListener("input", (e) => {
+      state.resources[n - 1] = e.target.value;
+      saveState();
+      scheduleRender();
+    });
+    $(`#field-teacher-${n}`).addEventListener("input", (e) => {
+      state.teacherNames[n - 1] = e.target.value;
+      saveState();
+      scheduleRender();
+    });
+  });
+  $("#btn-add-teacher").addEventListener("click", () => {
+    if (teacherFieldCount < 5) teacherFieldCount += 1;
+    updateTeacherFieldVisibility();
+    $(`#field-teacher-${teacherFieldCount}`).focus();
+  });
 
   [1, 2, 3].forEach((n) => {
     $(`#field-objective-${n}`).addEventListener("input", (e) => {
@@ -478,6 +555,17 @@ function bindEvents() {
     });
   });
 
+  document.querySelectorAll("#status-checkboxes input[type=checkbox]").forEach((cb) => {
+    cb.addEventListener("change", () => {
+      state.lessonStatus = cb.checked ? cb.value : "";
+      document.querySelectorAll("#status-checkboxes input[type=checkbox]").forEach((other) => {
+        other.checked = other.value === state.lessonStatus;
+      });
+      saveState();
+      scheduleRender();
+    });
+  });
+
   document.querySelectorAll(".page-nav__btn").forEach((btn) => {
     btn.addEventListener("click", () => setActivePage(Number(btn.dataset.page)));
   });
@@ -542,6 +630,9 @@ function handleImportJson(e) {
       state.objectives = normalizeTriple(state.objectives);
       state.links = normalizeTriple(parsed.links !== undefined ? parsed.links : parsed.link);
       delete state.link;
+      state.teacherNames = normalizeTeacherNames(parsed.teacherNames !== undefined ? parsed.teacherNames : parsed.teacherName);
+      delete state.teacherName;
+      state.resources = normalizeResources(state.resources);
       populateFormFromState();
       saveState();
       scheduleRender();
@@ -560,6 +651,7 @@ function init() {
   buildMindsetPicker();
   buildCheckboxGroup("subject-checkboxes", SUBJECT_OPTIONS, "subjects");
   buildCheckboxGroup("grade-checkboxes", GRADE_OPTIONS, "grades");
+  buildStatusCheckboxes();
   buildTimeSelect();
   bindEvents();
   populateFormFromState();

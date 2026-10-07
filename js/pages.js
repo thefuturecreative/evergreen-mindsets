@@ -53,6 +53,10 @@ function isLikelyValidUrl(value) {
   }
 }
 
+function getTeacherNames(state) {
+  return (state.teacherNames || []).map((n) => (n || "").trim()).filter(Boolean);
+}
+
 function getMindset(state) {
   return state.mindset ? MINDSETS[state.mindset] : null;
 }
@@ -85,6 +89,7 @@ function eyebrow(label) {
 // ---------- PAGE 1 — CONTEXT ----------
 function renderPage1(state) {
   const mindset = getMindset(state);
+  const teachers = getTeacherNames(state);
   const subjects = [...state.subjects];
   if (state.subjects.includes("Other") && state.subjectOther) {
     const idx = subjects.indexOf("Other");
@@ -108,14 +113,21 @@ function renderPage1(state) {
           <dt>Grade Level${state.grades.length > 1 ? "s" : ""}</dt>
           <dd>${state.grades.length ? escapeHtml(state.grades.join(", ")) : "&mdash;"}</dd>
         </div>
-        ${state.teacherName ? `
+        ${teachers.length ? `
         <div class="cover-meta__row">
-          <dt>Teacher</dt>
-          <dd>${escapeHtml(state.teacherName)}</dd>
+          <dt>Teacher${teachers.length > 1 ? "s" : ""}</dt>
+          <dd>${escapeHtml(teachers.join(", "))}</dd>
         </div>` : ""}
       </dl>
       ${mindset ? `<p class="cover-tagline">&ldquo;${escapeHtml(mindset.tagline)}&rdquo;</p>` : ""}
-    </div>`;
+    </div>
+    <ul class="cover-status" aria-label="Lesson or project status">
+      ${LESSON_STATUS_OPTIONS.map((opt) => `
+      <li class="cover-status__item">
+        <span class="cover-status__box${state.lessonStatus === opt.value ? " is-checked" : ""}" aria-hidden="true"></span>
+        <span class="cover-status__label">${escapeHtml(opt.label)}</span>
+      </li>`).join("")}
+    </ul>`;
   return pageShell(1, mindset, body, "page-content--cover");
 }
 
@@ -190,7 +202,7 @@ function renderPage4(state) {
     </section>
     <section class="content-block">
       <h2 class="content-block__heading">Required Resources</h2>
-      <div class="content-block__body">${textToParagraphs(state.resources) || emptyState("No special resources listed.")}</div>
+      <div class="content-block__body">${bulletList(state.resources) || emptyState("No special resources listed.")}</div>
     </section>
     <section class="content-block">
       <h2 class="content-block__heading">Lesson / Project Link(s)</h2>
@@ -205,10 +217,17 @@ function renderPage4(state) {
 function renderPage5(state) {
   const mindset = getMindset(state);
   const wisdomItems = state.wisdom.filter((w) => w && w.trim());
+  const teachers = getTeacherNames(state);
+  const teacherPossessive =
+    teachers.length === 0
+      ? "Based on this teacher&rsquo;s"
+      : teachers.length === 1
+        ? "Based on " + escapeHtml(teachers[0]) + "&rsquo;s"
+        : "Based on the shared";
   const body = `
     ${eyebrow("Words of Wisdom")}
     <h1 class="page-title">Words of Wisdom</h1>
-    <p class="page-subheading">Based on ${state.teacherName ? escapeHtml(state.teacherName) + "&rsquo;s" : "this teacher&rsquo;s"} experience, what should another Evergreen teacher know before trying this lesson or project?</p>
+    <p class="page-subheading">${teacherPossessive} experience, what should another Evergreen teacher know before trying this lesson or project?</p>
     <ol class="wisdom-list">
       ${wisdomItems.length
         ? wisdomItems.map((w, i) => `<li class="wisdom-list__item"><span class="wisdom-list__number">${i + 1}</span><span class="wisdom-list__text">${escapeHtml(w)}</span></li>`).join("")
