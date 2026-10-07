@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Evergreen Creativity Toolkit Builder</title>
-<meta name="description" content="Document a creativity-mindset lesson and export a polished, publication-ready five-page Evergreen Creativity Toolkit entry." />
+<meta name="description" content="Document a creativity-disposition lesson and export a polished, publication-ready five-page Evergreen Creativity Toolkit entry." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,7 +40,16 @@
         five-page toolkit that can be shared across the Evergreen community.
       </p>
 
-      <!-- Mindset Selector -->
+      <!-- Progress -->
+      <ol class="progress-tracker" id="progress-tracker" aria-label="Entry progress">
+        <li data-progress="context"><span class="progress-dot" aria-hidden="true"></span>Context</li>
+        <li data-progress="summary"><span class="progress-dot" aria-hidden="true"></span>Summary</li>
+        <li data-progress="mindset"><span class="progress-dot" aria-hidden="true"></span>Disposition</li>
+        <li data-progress="logistics"><span class="progress-dot" aria-hidden="true"></span>Logistics</li>
+        <li data-progress="wisdom"><span class="progress-dot" aria-hidden="true"></span>Wisdom</li>
+      </ol>
+
+      <!-- Disposition Selector -->
       <div class="mindset-picker" role="group" aria-labelledby="mindset-picker-heading">
         <h3 id="mindset-picker-heading" class="mindset-picker__heading">Which creativity disposition did you integrate?</h3>
         <div class="mindset-picker__grid" id="mindset-picker-grid"></div>
@@ -147,7 +156,7 @@
             <span class="accordion__label">Integrating the Disposition</span>
           </summary>
           <div class="accordion__panel">
-            <p class="mindset-guidance" id="mindset-guidance-text">Select a creativity mindset above to see tailored guidance here.</p>
+            <p class="mindset-guidance" id="mindset-guidance-text">Select a creativity disposition above to see tailored guidance here.</p>
             <div class="field">
               <label for="field-integration" id="integration-label">How did you nurture the disposition? <span class="required-mark">*</span></label>
               <p class="field-hint" id="integration-hint">In approximately 100 words, describe the instructional strategies you used to promote and nurture this disposition within this lesson or project. What did you deliberately do to create opportunities for students to develop and demonstrate this disposition?</p>

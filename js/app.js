@@ -226,7 +226,7 @@ function updateMindsetDependentUI() {
   $("#mindset-picker-descriptor").textContent = m ? m.descriptor : "";
   $("#mindset-guidance-text").textContent = m
     ? m.guidance
-    : "Select a creativity mindset above to see tailored guidance here.";
+    : "Select a creativity disposition above to see tailored guidance here.";
   const dispositionName = m ? `the ${m.name} disposition` : "the disposition";
   $("#integration-label").innerHTML =
     `How did you nurture ${dispositionName}? <span class="required-mark">*</span>`;
@@ -300,10 +300,10 @@ function getRequiredFieldIssues() {
   if (state.subjects.includes("Other") && !state.subjectOther.trim())
     issues.push({ label: "Subject (please specify “Other”)", section: "context" });
   if (!state.grades.length) issues.push({ label: "At least one Grade Level", section: "context" });
-  if (!state.mindset) issues.push({ label: "Creativity Mindset selection", section: "mindset" });
+  if (!state.mindset) issues.push({ label: "Creativity Disposition selection", section: "mindset" });
   if (!state.objectives.some((o) => o.trim())) issues.push({ label: "At least one Key Learning Objective", section: "summary" });
   if (!state.overview.trim()) issues.push({ label: "Lesson / Project Overview", section: "summary" });
-  if (!state.integration.trim()) issues.push({ label: "Mindset Integration description", section: "mindset" });
+  if (!state.integration.trim()) issues.push({ label: "Disposition Integration description", section: "mindset" });
   return issues;
 }
 

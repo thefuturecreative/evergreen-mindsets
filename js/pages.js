@@ -98,8 +98,8 @@ function renderPage1(state) {
 
   const body = `
     <div class="cover-band">
-      <p class="cover-band__label">Creativity Mindset</p>
-      <p class="cover-band__name">${mindset ? escapeHtml(mindset.name.toUpperCase()) : "Select a Mindset"}</p>
+      <p class="cover-band__label">Creativity Disposition</p>
+      <p class="cover-band__name">${mindset ? escapeHtml(mindset.name.toUpperCase()) : "Select a Disposition"}</p>
       <p class="cover-band__descriptor">${mindset ? escapeHtml(mindset.descriptor) : ""}</p>
     </div>
     <div class="cover-body">
@@ -136,7 +136,7 @@ function renderPage2(state) {
   const mindset = getMindset(state);
   const body = `
     ${eyebrow("The Lesson")}
-    <h1 class="page-title">Lesson Summary</h1>
+    <h1 class="page-title">Lesson/Project Summary</h1>
     <section class="content-block">
       <h2 class="content-block__heading">Key Learning Objective(s)</h2>
       <div class="content-block__body">${bulletList(state.objectives) || emptyState("Learning objectives will appear here.")}</div>
@@ -148,14 +148,14 @@ function renderPage2(state) {
   return pageShell(2, mindset, body);
 }
 
-// ---------- PAGE 3 — INTEGRATING THE MINDSET ----------
+// ---------- PAGE 3 — INTEGRATING THE DISPOSITION ----------
 function renderPage3(state) {
   const mindset = getMindset(state);
   const heading = mindset
-    ? `Bringing the ${mindset.name} Mindset Into the Lesson`
-    : "Bringing the Mindset Into the Lesson";
+    ? `Bringing the ${mindset.name} Disposition Into the Lesson`
+    : "Bringing the Disposition Into the Lesson";
   const body = `
-    ${eyebrow("Integrating the Mindset")}
+    ${eyebrow("Integrating the Disposition")}
     <h1 class="page-title">${escapeHtml(heading)}</h1>
     ${mindset ? `
     <div class="mindset-badge">
@@ -163,7 +163,7 @@ function renderPage3(state) {
       <span class="mindset-badge__descriptor">${escapeHtml(mindset.descriptor)}</span>
     </div>` : ""}
     <section class="content-block content-block--feature">
-      <div class="content-block__body content-block__body--feature">${textToParagraphs(state.integration) || emptyState("A description of how this mindset was integrated will appear here.")}</div>
+      <div class="content-block__body content-block__body--feature">${textToParagraphs(state.integration) || emptyState("A description of how this disposition was nurtured will appear here.")}</div>
     </section>`;
   return pageShell(3, mindset, body);
 }

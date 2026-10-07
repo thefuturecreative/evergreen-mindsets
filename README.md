@@ -2,12 +2,12 @@
 
 A static, single-page tool that lets Evergreen School teachers document a
 lesson or project where they deliberately integrated one of the five
-2026&ndash;27 creativity mindsets &mdash; **Imaginative, Inquisitive,
+2026&ndash;27 creativity dispositions &mdash; **Imaginative, Inquisitive,
 Persistent, Collaborative,** and **Disciplined** &mdash; and export it as a
 polished, publication-ready, five-page US Letter PDF. Individual teacher
 entries are designed to be combined later into one collective Evergreen
 Creativity Toolkit, so every entry shares identical dimensions, margins,
-typography, and page architecture &mdash; only content and mindset color vary.
+typography, and page architecture &mdash; only content and disposition color vary.
 
 No build step, server, database, login, or account is required. Everything
 is HTML, CSS, and vanilla JavaScript, and the whole thing runs entirely in
@@ -15,8 +15,8 @@ the teacher's browser — nothing they type is ever transmitted anywhere.
 
 ## What it does
 
-- A guided, five-section form (Context, Summary, Integrating the Mindset,
-  Logistics, Words of Wisdom) built as an accordion, so teachers can freely
+- A guided, five-section form (Context, Lesson/Project Summary, Integrating the
+  Disposition, Logistical Planning, Words of Wisdom) built as an accordion, so teachers can freely
   revisit earlier sections instead of following a rigid wizard.
 - A live, true-to-scale US Letter preview of all five pages that updates as
   the teacher types, with page navigation tabs and clickable thumbnails.
@@ -47,7 +47,7 @@ the teacher's browser — nothing they type is ever transmitted anywhere.
 │   ├── app.js                State, form wiring, live preview rendering, validation, autosave
 │   └── export.js             PDF and PNG generation
 ├── data/
-│   ├── mindsets.js            Central mindset data: names, colors, descriptors, guidance
+│   ├── mindsets.js            Central disposition data: names, colors, descriptors, guidance
 │   └── formOptions.js         Subject / grade-level / time-required option lists
 ├── assets/
 │   └── vendor/                 Local copies of jsPDF and html2canvas (no CDN dependency)
@@ -85,12 +85,12 @@ and other folders as-is, with no build step.
   `--teal-darkest`, `--mint`, `--olive`, `--gold`, `--gold-deep`,
   `--orange`, `--cream`). The publication page design in
   [`css/print.css`](css/print.css) reads the same brand variables plus the
-  per-mindset `--mindset-color` / `--mindset-text` custom properties that
+  per-disposition `--mindset-color` / `--mindset-text` custom properties that
   `js/pages.js` sets inline on each `.page`.
-- **Mindset information** (name, color, text color, descriptor, tagline,
+- **Disposition information** (name, color, text color, descriptor, tagline,
   builder-only guidance) — [`data/mindsets.js`](data/mindsets.js). This is
-  the single source of truth; nothing about a mindset is duplicated
-  elsewhere. To retheme or add a mindset, edit this file only.
+  the single source of truth; nothing about a disposition is duplicated
+  elsewhere. To retheme or add a disposition, edit this file only.
 - **Form options** (Subjects, Grade Levels, Time Required choices) —
   [`data/formOptions.js`](data/formOptions.js).
 - **The US Letter page design** — [`css/print.css`](css/print.css) defines
@@ -165,15 +165,15 @@ or moving an in-progress entry to another device.
 - **Future-ready, not future-built**: the data model in `data/mindsets.js`
   and the flat `state` shape in `js/app.js` were kept simple and
   serializable on purpose, so that later features mentioned in the original
-  brief (a shared example library, filtering by grade/subject/mindset,
+  brief (a shared example library, filtering by grade/subject/disposition,
   photo uploads, editing past submissions, QR codes, etc.) can be layered
   on without restructuring what's here. None of that is built yet.
 
 ## Before shipping a change
 
-- All five mindsets: colors, descriptors, and guidance update correctly
+- All five dispositions: colors, descriptors, and guidance update correctly
   everywhere (picker, guidance panel, all 5 preview pages) when selected —
-  including switching mindsets after content already exists, with no data
+  including switching dispositions after content already exists, with no data
   loss.
 - Word counters behave correctly at 0–50, 51–60, and 61+ words without
   ever truncating input.
@@ -190,5 +190,5 @@ or moving an in-progress entry to another device.
   scrolling; the exported PDF/PNG dimensions never change regardless of
   screen size.
 - A generated PDF actually opens: exactly 5 pages, true 8.5×11in portrait,
-  no clipped content, correct mindset color and page numbering, and a
+  no clipped content, correct disposition color and page numbering, and a
   working link on Page 4.
